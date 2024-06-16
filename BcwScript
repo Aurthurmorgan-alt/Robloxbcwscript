@@ -166,8 +166,13 @@ Section3:Check({
         isBonusHealing = isChecked
         if isChecked then
             while isBonusHealing do
-                local args = {[1] = "holycross",[2] = {[1] = Vector3.new(68.58963012695312, 8.000038146972656, 176.99710083007812),[2] = 300}}
-                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Kiln of the Holy Flame").RemoteFunction:InvokeServer(unpack(args))
+                local success, result = pcall(function()
+                    local args = {[1] = "holycross", [2] = {[1] = Vector3.new(68.58963012695312, 8.000038146972656, 176.99710083007812), [2] = 300}}
+                    game:GetService("Players").LocalPlayer.Character:FindFirstChild("Kiln of the Holy Flame").RemoteFunction:InvokeServer(unpack(args))
+                end)
+                if not success then
+                    warn("Error occurred while calling RemoteFunction: " .. result)
+                end
                 wait()
             end
         else
@@ -176,6 +181,5 @@ Section3:Check({
         end
     end
 })
-
 
 Tab:Select()
