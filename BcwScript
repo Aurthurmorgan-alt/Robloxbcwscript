@@ -14,6 +14,7 @@ local isTping = false
 local oldSpot = nil
 local oldSpotSummon = nil
 local downPosition = CFrame.new(-1.5, 23.5, -390.5)
+local isHealing = False
 
 -- Utility functions
 local function savePosition()
@@ -138,5 +139,20 @@ Section3:Button({
         teleportDown()
     end
 })
+
+Section3:Check({
+    Text = "Start Healing (Must have festive armour equipped)",
+    Callback = function(isHealing)
+        while isHealing do
+            local args = {[1] = workspace:WaitForChild("T3MPLE324")}
+            game:GetService("Players").LocalPlayer.Character.AbilityMain:FireServer(unpack(args))
+            wait()
+        end
+        warn("Start Healing: " .. tostring(isShooting))
+    end
+})
+
+local args = {[1] = workspace:WaitForChild("XxDRONExX09")}
+game:GetService("Players").LocalPlayer.Character.AbilityMain:FireServer(unpack(args))
 
 Tab:Select()
