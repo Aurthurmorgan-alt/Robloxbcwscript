@@ -163,12 +163,17 @@ Section3:Check({
     Text = "Spam Bonus Heal(Must have kiln of the holy flame)",
     Callback = function(isChecked)
         isBonusHealing = isChecked
-        while isBonusHealing do
-            local args = {[1] = "holycross", [2] = {[1] = Vector3.new(68.58963012695312, 8.000038146972656, 176.99710083007812), [2] = 300}}
-            game:GetService("Players").LocalPlayer.Character:FindFirstChild("Kiln of the Holy Flame").RemoteFunction:InvokeServer(unpack(args))
-            wait()
+
+        if isChecked then
+            while isBonusHealing do
+                local args = {[1] = "holycross", [2] = {[1] = Vector3.new(68.58963012695312, 8.000038146972656, 176.99710083007812), [2] = 300}}
+                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Kiln of the Holy Flame").RemoteFunction:InvokeServer(unpack(args))
+                wait()
+            end
+        else
+            isBonusHealing = false
+            warn("Bonus Healing Stopped")
         end
-        warn("Start Bonus Healing: " .. tostring(isTping))
     end
 })
 
