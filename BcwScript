@@ -142,15 +142,19 @@ Section3:Button({
 
 Section3:Check({
     Text = "Start Healing (Must have festive armour equipped)",
-    Callback = function(isHealing)
-        while isHealing do
-            if isHealing do
+    Callback = function(isChecked)
+        isHealing = isChecked
+        
+        if isChecked then
+            while isHealing do
                 local args = {[1] = workspace:WaitForChild("T3MPLE324")}
                 game:GetService("Players").LocalPlayer.Character.AbilityMain:FireServer(unpack(args))
                 wait()
             end
+        else
+            isHealing = false
+            warn("Healing stopped.")
         end
-        warn("Start Healing: " .. tostring(isShooting))
     end
 })
 
