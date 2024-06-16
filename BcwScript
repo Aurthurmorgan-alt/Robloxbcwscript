@@ -1,0 +1,142 @@
+-- Separate UI-related logic
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Rain-Design/PPHUD/main/Library.lua'))()
+local Window = Library:Window({ Text = "Dont Mind" })
+local Tab = Window:Tab({ Text = "T3MPLE HUB!!!" })
+local Section = Tab:Section({ Text = "Mining/Ore" })
+local Section3 = Tab:Section({ Text = "Tp Stuff"})
+
+-- Game-specific functionality
+local player = game.Players.LocalPlayer.Character
+local selectedOre = nil
+local isAfkMining = false
+local isMining = false
+local isTping = false
+local oldSpot = nil
+local oldSpotSummon = nil
+local downPosition = CFrame.new(-1.5, 23.5, -390.5)
+
+-- Utility functions
+local function savePosition()
+    if true then
+        oldSpot = player.HumanoidRootPart.CFrame
+    end
+end
+
+local function teleportToOre(oreToTp)
+    if Workspace.Map.Ores[oreToTp].Aura then
+        player.HumanoidRootPart.CFrame = Workspace.Map.Ores[oreToTp].Aura.CFrame
+    end
+end
+
+local function teleportDown()
+    if true then
+        oldSpotSummon = player.HumanoidRootPart.CFrame
+        player.HumanoidRootPart.CFrame = downPosition
+        game:GetService("Players").LocalPlayer.Character.Shield.ShieldRemote:FireServer()
+        wait(2)
+        player.HumanoidRootPart.CFrame = oldSpotSummon
+    end
+end
+
+-- UI Functionality
+Section:Dropdown({
+    Text = "Select Ore:",
+    List = {"Moonstone", "Forbidden Crystal", "Purite"},
+    Callback = function(option)
+        selectedOre = option
+        warn("Selected ore: " .. option)
+    end
+})
+
+Section:Button({
+    Text = "Tp to ore",
+    Callback = function()
+        if selectedOre then
+            teleportToOre(selectedOre)
+            warn("Teleporting to " .. selectedOre)
+        else
+            warn("Please select an ore first.")
+        end
+    end
+})
+
+Section:Check({
+    Text = "Afk Mine",
+    Callback = function(isChecked)
+        isAfkMining = isChecked
+        if isChecked and selectedOre then
+            while isChecked do
+                teleportToOre(selectedOre)
+                wait()
+            end
+        else
+            isAfkMining = false
+            warn("Afk mining stopped.")
+        end
+    end
+})
+
+Section:Check({
+    Text = "Always Mining",
+    Callback = function(bool)
+        isMining = bool
+        while bool do
+            local args = {[1] = "mine"}
+            game:GetService("Players").LocalPlayer.Character:FindFirstChild("Pickaxe of Balance").RemoteFunction:InvokeServer(unpack(args))
+        end
+        warn("isMining: " .. tostring(bool))
+    end
+})
+
+Section3:Button({
+    Text = "Save Position",
+    Callback = function()
+        savePosition()
+    end
+})
+
+Section3:Button({
+    Text = "Tp To Position",
+    Callback = function()
+        if oldSpot then
+            player.HumanoidRootPart.CFrame = oldSpot
+        else
+            warn("No position saved.")
+        end
+    end
+})
+
+Section3:Check({
+    Text = "Spam Tp",
+    Callback = function(isChecked)
+        isTping = isChecked
+        while isTping do
+            if oldSpot then
+                player.HumanoidRootPart.CFrame = oldSpot
+            end
+            wait()
+        end
+        warn("Start Tp'ing: " .. tostring(isTping))
+    end
+})
+
+Section3:Check({
+    Text = "Start Shooting",
+    Callback = function(isShooting)
+        while isShooting do
+            local args = {[1] = "shootspecial", [2] = {[1] = Vector3.new(-33, 1403, -354), [2] = Vector3.new(-16, 6, -198), [3] = 12}}
+            game:GetService("Players").LocalPlayer.Character.Solstice.RemoteFunction:InvokeServer(unpack(args))
+            wait()
+        end
+        warn("Start Shooting: " .. tostring(isShooting))
+    end
+})
+
+Section3:Button({
+    Text = "Tp Down To Summon",
+    Callback = function()
+        teleportDown()
+    end
+})
+
+Tab:Select()
